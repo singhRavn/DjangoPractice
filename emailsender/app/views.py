@@ -1,4 +1,5 @@
 # from multiprocessing import connection
+import json
 from django.shortcuts import render
 from django.core.mail import EmailMessage, get_connection
 from django.conf import settings
@@ -14,8 +15,9 @@ def send_email(request):
             print(request.body)
             email_from = settings.EMAIL_HOST_USER
             # recipient_list = request.POST.get("email").split()  
-
-            recipient_list = [request.POST.get("email"),]
+            data_dict = json.loads(request.body.decode('utf-8'))
+            email = data_dict.get("email")
+            recipient_list = [email]
             print(recipient_list)
             message = request.POST.get("message")
             EmailMessage(subject,message,email_from,recipient_list,connection=connection).send()
